@@ -2,9 +2,6 @@
 ## Empowering Women's Wellness: Unveiling Smart Device Insights for Bellabeat's Growth and Marketing Strategy
 
 
-<img src="bellabeat_logo.png" style="text-align:center" alt="bellabeat logo"/>
-
-
 <div style="margin-bottom: 60px;">
 
 **Prepared by:** [Mr. Jefferson Mwatati](https://www.linkedin.com/in/jefferson-mwatati/) 
