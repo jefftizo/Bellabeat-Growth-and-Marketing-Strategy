@@ -24,111 +24,24 @@ Bellabeat company is a high-tech manufacturer of health-focused products for wom
 ## Analysis
 To see a complete analysis of this project done on R, check the "bellabeat_analysis.Rmd" it has everything
 
-
-
-
-
-
 ## **Visualizations and Key Findings**
 
-**1. Visualizations and Key Findings of "cleandailyactivity_df"**
+**Below are some of the visualizations**
 
 The plotted data represents the trend in total steps taken over a period of time. Initially, there is a gradual and consistent decline in the number of steps recorded with fluctuations, indicating a potential shift in activity levels. However, what stands out most prominently is the sudden and steep decline observed towards the end of the time frame. This sharp decline could signify a significant change in behavior or external factors impacting step count. Further investigation into this sharp decline could reveal valuable insights into the underlying reasons for the observed trend.
 ![total_steps](https://github.com/jefftizo/Bellabeat-Growth-and-Marketing-Strategy/assets/59502483/7e15b679-452f-44a1-9809-a6453bdbe121)
 
 
-
-
-
-
-
-
-
-
-
-
-Total Distance Covered from April 12, 2016, to May 12, 2016, exhibits a consistent decline with fluctuations and a sudden steep drop towards the end, possibly indicating a significant shift in activity levels or an external influence.
-
-```{r}
-# Plot the trend in total distance over time
-ggplot(total_distance_by_date, aes(newActivityDate, total_distance)) +
-  geom_line(color = "darkgreen", linewidth = 1.2) +
-  labs(title = "Total Distance Trend Analysis",
-       subtitle=paste0("Exploring Changes in Total Distance Covered from: ", activity_firstday, " to ", activity_lastday),
-       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
-       x="Activity Date",
-       y="Total Distance")
-
-```
-
-
-The plot illustrates the trend in calories burned over a span from 2016-04-12 to 2016-05-12. Initially, there is a consistent decline in calories burned with fluctuations, suggesting a gradual shift in activity. Notably, a sudden and steep decline towards the end of the period could indicate a significant change in exercise behavior or external factors influencing energy expenditure.
-
-```{r}
-# Plot the trend in calories burned over time
-ggplot(calories_burned_by_date, aes(newActivityDate, calories_burned)) +
-  geom_line(color = "purple", linewidth = 1.2) +
-  labs(title = "Tracking Energy Expenditure: Trend in Calories Burned Over Time",
-       subtitle=paste0("Analyzing Activity Data from: ", activity_firstday, " to ", activity_lastday),
-       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
-       x="Activity Date",
-       y="Calories Burned")
-```
-
-
-The plotted data illustrates a woman's activity levels over a month. Her step count follows a distinct pattern: an intense workout on the first day, followed by decreasing activity in the subsequent days, including periods of inactivity. Towards the end of the month, there's a sudden surge in activity, peaking before another decline. This fluctuating trend showcases her varying exercise commitment and highlights potential factors influencing her activity levels. 
-
-```{r}
-ggplot(fitnesswoman_001, aes(newActivityDate, TotalSteps)) +
-  geom_line(color = "darkblue", linewidth = 1.2) +
-  labs(title = "Tracking Total Steps: Unveiling the 31-Day Journey",
-       subtitle=paste0("A Comprehensive Trend Analysis of Participant's Activity"),
-       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
-       x="Activity Date",
-       y="Total Steps")
-```
-
-
-
-The depicted plot showcases consistent daily exercise by a woman over 31 days, with noticeable fluctuations. Her activity level remains relatively steady, followed by a sudden significant increase in activity towards the end. However, this surge is succeeded by a sharp decline. Despite the fluctuations, her dedication to daily exercise remains evident.
-
-```{r}
-ggplot(fitnesswoman_002, aes(newActivityDate, TotalSteps)) +
-  geom_line(color = "darkblue", linewidth = 1.2) +
-  labs(title = "Exploring Activity Fluctuations: A 31-Day Step Journey",
-       subtitle=paste0("Analyzing Variations in Total Steps for a Month"),
-       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
-       x="Activity Date",
-       y="Total Steps")
-```
-
-
-
 The presented plot illustrates a woman's consistent activity level in terms of total steps over the span of a month. Despite maintaining a steady performance, there are noticeable fluctuations on certain days, indicating variability in her routine. Some days stand out with notably higher step counts, showcasing her capacity for increased activity. However, as the month progresses, there's a gradual decline in her overall activity, suggesting a potential change in her exercise routine. 
 
-```{r}
-ggplot(fitnesswoman_003, aes(newActivityDate, TotalSteps)) +
-  geom_line(color = "darkblue", linewidth = 1.2) +
-  labs(title = "Monthly Total Steps Analysis: Unveiling Activity Trends",
-       subtitle=paste0("Exploring 31 Days of Physical Activity Patterns"),
-       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
-       x="Activity Date",
-       y="Total Steps")
-```   
+![participant_trend](https://github.com/jefftizo/Bellabeat-Growth-and-Marketing-Strategy/assets/59502483/0782f901-6075-4886-a236-85a8e1295ae9)
 
 
 This composite plot offers a comprehensive perspective on individual women's total steps over a 31-day span. Each woman's activity trend is depicted in a separate facet, allowing for direct comparison. While some exhibit consistent patterns with occasional fluctuations, others showcase varying levels of daily steps. 
 
-```{r}
-ggplot(fitnesswoman_005, aes(newActivityDate, TotalSteps)) +
-  geom_line(color = "darkblue", linewidth = 1.2) +
-  facet_wrap(~Id) +
-  labs(title = "Individual Total Steps Analysis: A Multifaceted View",
-       subtitle=paste0("Exploring 31 Days of Activity Trends for Different Women"),
-       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
-       x="Activity Date",
-       y="Total Steps")
-```
+![composite_plot](https://github.com/jefftizo/Bellabeat-Growth-and-Marketing-Strategy/assets/59502483/2b590191-1cad-4bfc-8f8e-a88a6b483657)
+
+
 
 
 **2. Visualizations and Key Findings of "cleansleepday_df"**
