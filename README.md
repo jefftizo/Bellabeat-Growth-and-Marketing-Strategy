@@ -42,161 +42,21 @@ This composite plot offers a comprehensive perspective on individual women's tot
 ![composite_plot](https://github.com/jefftizo/Bellabeat-Growth-and-Marketing-Strategy/assets/59502483/2b590191-1cad-4bfc-8f8e-a88a6b483657)
 
 
-
-
-**2. Visualizations and Key Findings of "cleansleepday_df"**
-
-
-The plotted data illustrates a distinct sleep pattern for 24 women over the course of a month. There is an initial decline in total minutes asleep, marked by numerous fluctuations characterized by alternating periods of increased and decreased sleep. Toward the end of the month, there's a pronounced steep decline in sleep duration. This trend suggests possible disruptions in sleep quality and consistency, highlighting the need for further investigation into factors impacting sleep patterns. 
-
-```{r}
-# Plot the trend in total minutes asleep over time
-
-ggplot(TotalMinutesAsleep_by_date, aes(Date, total_minutes_asleep)) +
-  geom_line(color = "darkblue", linewidth = 1.2) +
-  labs(title = "Exploring Sleep Patterns: Total Minutes Asleep Over Time",
-       subtitle=paste0("Analyzing Sleep Trends Across Dates for 24 Women"),
-       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
-       x="Date",
-       y="Total Minutes Asleep")
-
-```
-
-
-
-The displayed plot reveals a consistent downward trend in total time spent in bed for 24 women over the span of a month. Amidst this decline, there are notable fluctuations, with periods of increased and decreased bedtimes. Towards the final days, a sharp and significant drop in total time in bed is evident, indicating potential changes in sleep patterns or external factors influencing bedtime routines. 
-
-```{r}
-# Plot the trend in total time in bed over time
-
-ggplot(TotalTimeInBed_by_date, aes(Date, total_time_in_bed)) +
-  geom_line(color = "darkred", linewidth = 1.2) +
-  labs(title = "Tracking Bedtime Trends: Total Time in Bed Over a Month",
-       subtitle=paste0("Analyzing Bedtime Duration Patterns Across Dates for 24 Women"),
-       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
-       x="Date",
-       y="Total Time in Bed")
-
-```
-
-
-
-The depicted plot portrays a participant's inconsistent sleep pattern over a 31-day period. The total time spent in bed exhibits continuous fluctuations, with no discernible steady trend. These fluctuations suggest an unstable sleep routine, potentially influenced by various factors impacting the participant's bedtime habits.
-
-```{r}
-ggplot(fitnesswomenTTIB, aes(Date,TotalTimeInBed)) +
-  geom_line(color = "maroon", linewidth = 1.2) +
-  labs(title = "Exploring Bedtime Patterns: 31-Day Total Time in Bed Analysis",
-       subtitle=paste0("Tracing a Participant's Bedtime Trends Over Time"),
-       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
-       x="Date",
-       y="Total Time in Bed")+
-  theme_light()
-
-```
-
-
-
 The presented histogram provides insight into the distribution of sleep durations among participants. The x-axis represents the total minutes asleep, with the y-axis indicating the frequency of occurrences. The histogram showcases a range of sleep durations, from a minimum of 58 minutes to a maximum of 796 minutes, with an average of approximately 419.47 minutes.
-
-```{r}
-# Create a histogram to visualize the distribution of TotalMinutesAsleep
-
-ggplot(cleansleepday_df, aes(x = TotalMinutesAsleep)) +
-  geom_histogram(binwidth = 30, col = "white", fill = "darkred") +
-  labs(title = "Understanding Sleep Duration Distribution",subtitle=paste0("Exploring the Spread of Total Minutes Asleep in a Dataset"),x = "Minutes Asleep", y = "Frequency", caption=paste0("Prepared by Mr. Jefferson Mwatati")) +
-  theme_bw()
-
-```
-
-
-
-The histogram visualizes the distribution of total time spent in bed among participants. The x-axis represents the time in bed (in minutes), while the y-axis indicates the count of occurrences. The histogram showcases a range of bedtime durations, spanning from a minimum of 61 minutes to a maximum of 961 minutes, with an average duration of approximately 458.64 minutes.
-
-```{r}
-# Plot the distribution of total time in bed
-ggplot(cleansleepday_df, aes(x = TotalTimeInBed)) +
-  geom_histogram(binwidth = 10, col = "white", fill = "darkblue") +
-  labs(title = "Exploring Bedtime Duration Distribution",subtitle=paste0("Analyzing the Spread of Total Time in Bed within the Dataset"), x = "Total Time in Bed (minutes)", y = "Count", caption=paste0("Prepared by Mr. Jefferson Mwatati")) +
-  theme_light()
-```
-
-
+![duration_distribution](https://github.com/jefftizo/Bellabeat-Growth-and-Marketing-Strategy/assets/59502483/c4868a03-e804-4122-a094-5c425e43725b)
 
 This scatter plot illustrates the connection between two variables: total minutes asleep and total time in bed. The x-axis represents the total minutes asleep, while the y-axis signifies the total time spent in bed. The green regression line highlights a strong positive correlation (0.920414) between these two variables. This indicates that as sleep duration increases, there is a tendency for longer time spent in bed.There are a few outliers on the scatter plot, which indicates that there are some people who do not follow the general trend. 
-
-```{r}
-# Create a scatter plot with regression line
-ggplot(cleansleepday_df, aes(x = TotalMinutesAsleep, y = TotalTimeInBed)) +
-  geom_point(color = "brown") +
-  geom_smooth(method = "lm", se = FALSE,linewidth = 1.4, color = "green") +
-  labs(x = "Total Minutes Asleep", y = "Total Time in Bed (minutes)", title = "Exploring the Relationship between Sleep Duration and Bedtime",subtitle=paste0("A strong positive correlation exists between total minutes asleep and total time in bed"), caption=paste0("Prepared by Mr. Jefferson Mwatati"))+
-   theme_light()
-  
-
-```
-
-
-**3. Visualizations and Key Findings of "cleanweightloginfo_df"**
-
-
-The histogram displays the distribution of recorded weights in kilograms. The x-axis shows weight intervals of 9 kg each, while the y-axis represents the frequency of weights falling within each interval. The graph indicates a common weight range around 45-54 kg, with an average weight of 72.04 kg. The minimum and maximum weights are 52.6 kg and 133.5 kg, respectively.
-
-```{r}
-ggplot(cleanweightloginfo_df, aes(x = WeightKg)) +
-  geom_histogram(binwidth = 9, fill = "blue", color = "black") +
-  labs(x = "Weight (Kg)", 
-       y = "Frequency", 
-       title = "Distribution of Weight in Kilograms",
-       subtitle=paste0("Frequency Distribution of Recorded Weights"),
-       caption=paste0("Prepared by Mr. Jefferson Mwatati"))
-
-```
+![correlation](https://github.com/jefftizo/Bellabeat-Growth-and-Marketing-Strategy/assets/59502483/99dc1d2b-8e9b-424f-bd8c-eb684061458e)
 
 
 The pie chart illustrates the distribution of manual and automatic reports. Manual reports make up the majority of the generated reports at 61%, indicating that a significant portion of data entry is done manually.
 Automatic reports contribute to 39% of the total reports, suggesting that there's a mix of automated and manual data collection.
-
-```{r}
-# Create a pie chart with percentages
-ggplot(grouped_IsManualReport, aes(x = "", y = no_of_reports, fill = factor(IsManualReport))) +
-  geom_bar(stat = "identity", width = 1) +
-  coord_polar("y", start = 0) +
-  labs(fill = "IsManualReport",
-       title = "Manual and Automatic Reports",
-       subtitle=paste0("Proportion of Reports Generated Manually and Automatically"),
-       caption=paste0("Prepared by Mr. Jefferson Mwatati")) +
-  scale_fill_manual(values = c("TRUE" = "purple", "FALSE" = "orange")) +
-  geom_text(aes(label = scales::percent(no_of_reports / sum(no_of_reports))), 
-            position = position_stack(vjust = 0.5)) +
-  theme_void()
-
-
-```
-
+![reports](https://github.com/jefftizo/Bellabeat-Growth-and-Marketing-Strategy/assets/59502483/30575fb9-2fbc-4782-a003-7b5687789ffb)
 
 
 The pie chart represents the distribution of different BMI categories among individuals. The largest portion of participants falls under the "Normal weight" category, constituting 50.7% of the individuals, indicating a significant proportion of healthy weight individuals.The "Overweight" category accounts for 47.8% of the distribution, suggesting a substantial proportion of participants are classified as overweight based on their BMI.While relatively small in proportion at 1.5%, the presence of individuals in the "Class III Obesity" category indicates that some participants have a severe level of obesity. 
 
-```{r}
-# Create a pie chart
-ggplot(counted_categories, aes(x = "", y = Count, fill = BMI_Category)) +
-  geom_bar(stat = "identity", width = 1) +
-  coord_polar("y", start = 0) +
-  labs(fill = "BMI Category",
-       title = "BMI Category Distribution",
-       subtitle=paste0("Proportion of Different BMI Categories Among Individuals"),
-       caption = "Prepared by Mr. Jefferson Mwatati") +
-  scale_fill_brewer(palette = "Set1") +  
-  geom_text(aes(label = scales::percent(Count / sum(Count))), 
-            position = position_stack(vjust = 0.5)) +
-  theme_void()
-```
-
-
-
-
-
+![BMI](https://github.com/jefftizo/Bellabeat-Growth-and-Marketing-Strategy/assets/59502483/69ad8ac3-513e-45d4-9ebd-410778311ded)
 
 ## **A summary of analysis**
 
