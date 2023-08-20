@@ -1,0 +1,853 @@
+---
+title: "Empowering Women's Wellness: Unveiling Smart Device Insights for Bellabeat's Growth and Marketing Strategy"
+author: "Prepared by: Mr. Jefferson Mwatati"
+date: "`r Sys.Date()`"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+  html_document:
+    toc: true
+---
+
+
+<img src="bellabeat_logo.png" style="text-align:center" alt="bellabeat logo"/>
+
+
+<div style="margin-bottom: 60px;">
+
+**Prepared by:** [Mr. Jefferson Mwatati](https://www.linkedin.com/in/jefferson-mwatati/) 
+**LinkedIn:** https://www.linkedin.com/in/jefferson-mwatati/
+</div>
+
+## **Business Task**
+Bellabeat company is a high-tech manufacturer of health-focused products for women that provides users with health data related to their **activity, sleep, stress, menstrual cycle, and mindfulness habits**. The company wants to become a larger player in the global smart device market. By analyzing smart device fitness data on **how consumers are using their smart devices** could help unlock new growth opportunities for the company. The insights discovered will also help guide marketing strategy for the company. The key question for this analysis will be:-
+
+1. What are some **trends in smart device** usage?
+2. How could these trends apply to Bellabeat customers?
+3. How could these trends help influence Bellabeat marketing strategy?
+
+#### **The big question:** How Can Bellabeat Wellness Technology Company Play It Smart?
+
+*"Any Woman Can Enjoy a Better, More Optimized Lifestyle"* [by Bellabeat Company](https://bellabeat.com/)
+
+## **Packages Required**
+
+
+Install all required packages for this analysis. **Note:**You are supposed to install these only once, when rendering your work always comment the installation lines to avoid errors.To install remove the **(#)** to uncomment the lines.
+
+```{r}
+#All required packages
+
+#install.packages("tidyverse")
+#install.packages("dplyr") #helps in data manipulation
+#install.packages("here")  #makes referencing files easy
+#install.packages("skimr") #good for summarizing data easily
+#install.packages("janitor") #it has functions for cleaning data
+#install.packages("prettydoc")
+
+```
+
+
+Load all the installed packages, this should be done always when starting a new session.
+
+```{r}
+#Load all installed packages
+
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(knitr)
+library(prettydoc)
+
+```
+
+
+## **Data Sources Used**
+
+
+This analysis uses public data that explores smart device users’ daily habits from [FitBit Fitness Tracker Data](https://www.kaggle.com/arashnic/fitbit) (CC0: Public Domain, dataset made available through [Mobius](https://www.kaggle.com/arashnic)):
+
+
+
+**1. Import Data set "dailyActivity_merged.csv"**
+
+Import data 
+
+```{r}
+# import data
+dailyactivity_df <- read_csv("dailyActivity_merged.csv")
+```
+View first 6 records.
+
+```{r}
+#view data
+head(dailyactivity_df)
+```
+
+
+**2. Import Data set "sleepDay_merged.csv"**
+
+Import data.
+
+```{r}
+#import data
+sleepday_df <- read_csv("sleepDay_merged.csv")
+```
+
+
+View first 6 records.
+
+```{r}
+#view data
+head(sleepday_df)
+```
+
+
+**3. Import Data set "weightLogInfo_merged.csv"**
+
+Import Data.
+
+```{r}
+#import data
+weightloginfo_df <- read_csv("weightLogInfo_merged.csv")
+```
+
+View first 6 records.
+
+```{r}
+#view data
+head(weightloginfo_df)
+```
+
+
+
+## **Cleaning and Manipulation of Data**
+
+
+**1. Clean and manipulate "dailyactivity_df"**
+
+Check the datatypes for all columns if are correct. 
+
+```{r}
+#View column names and datatypes 
+glimpse(dailyactivity_df)
+```
+
+Observe **ActivityDate column** it has a data type character change that datatype to date as follows. Create new column called **"newActivityDate"**
+
+```{r}
+# create new column
+newdailyactivity_df <- dailyactivity_df %>%
+  mutate(newActivityDate = mdy(ActivityDate))
+```
+
+**Arrange columns in the order you want** and ignore columns you will not need in analysis.
+
+```{r}
+#select and arrange columns
+cleandailyactivity_df <- select(newdailyactivity_df,Id, newActivityDate,TotalSteps,TotalDistance,Calories)
+```
+
+
+View the ordered columns, also observe the newActivityDate column has **data type date**
+
+```{r}
+#view data set
+head(cleandailyactivity_df)
+```
+
+
+**Activity data statistics**
+
+Some of this information can be used in guiding and advising new fitness clients. 
+
+```{r}
+# Calculate statistics
+activity_totalrecords <- nrow(cleandailyactivity_df)
+activity_totaldays <- length(unique(cleandailyactivity_df$newActivityDate))
+activity_totalparticipants <- length(unique(cleandailyactivity_df$Id))
+average_daily_steps <- mean(cleandailyactivity_df$TotalSteps)
+average_daily_distance <- mean(cleandailyactivity_df$TotalDistance)
+average_daily_calories_burned <- mean(cleandailyactivity_df$Calories)
+
+# Print the calculated statistics
+cat("Total Activity Records:", activity_totalrecords, "\n")
+cat("Total Activity Days:", activity_totaldays, "\n")
+cat("Total women participants:", activity_totalparticipants, "\n")
+cat("Average of daily steps made:", average_daily_steps, "\n")
+cat("Average of daily distance covered:", average_daily_distance, "\n")
+cat("Average of daily calories burned:", average_daily_calories_burned, "\n")
+```
+
+Determine the **First day of activity record** and **Last day of activity record** according to data.
+
+```{r}
+# Determine activity first day and last day
+activitydaterange_df <- cleandailyactivity_df %>%
+  summarize(
+    activity_firstday = min(newActivityDate),
+    activity_lastday = max(newActivityDate)
+  )
+
+# Display results
+head(activitydaterange_df)
+```
+
+
+Creates data frame **total_steps_by_date** that groups the data frame by the newActivityDate column and then sums the TotalSteps column for each group.
+```{r}
+# Calculate the trend in total steps over time
+total_steps_by_date <- cleandailyactivity_df %>%
+  group_by(newActivityDate) %>%
+  summarise(total_steps = sum(TotalSteps))
+
+total_steps_by_date
+```
+
+
+Create data frame **total_distance_by_date** that groups the data frame by the newActivityDate column and then sums the TotalDistance column for each group.
+
+```{r}
+# Calculate the trend in total distance over time
+total_distance_by_date <- cleandailyactivity_df %>%
+  group_by(newActivityDate) %>%
+  summarise(total_distance = sum(TotalDistance))
+total_distance_by_date
+```
+
+
+Create data frame **calories_burned_by_date** that groups the data frame by the newActivityDate column and then sums the Calories column for each group.
+
+```{r}
+# Calculate the trend in calories burned over time
+calories_burned_by_date <- cleandailyactivity_df %>%
+  group_by(newActivityDate) %>%
+  summarise(calories_burned = sum(Calories))
+
+calories_burned_by_date
+```
+
+
+
+Use the Pipe Operator to Filter and Extract Specific Records of a single participant.
+
+```{r}
+#Filtering a dataset using the pipe operator to extract specific records
+fitnesswoman_001 <- cleandailyactivity_df %>%
+  filter(Id=="4020332650") 
+```
+
+
+
+
+Use the Pipe Operator to Filter and Extract Specific Records of a single participant.
+
+```{r}
+#Filtering a dataset using the pipe operator to extract specific records
+fitnesswoman_002 <- cleandailyactivity_df %>%
+  filter(Id=="4388161847") 
+```
+
+
+
+
+Use the Pipe Operator to Filter and Extract Specific Records of a single participant.
+
+```{r}
+#Filtering a dataset using the pipe operator to extract specific records
+fitnesswoman_003 <- cleandailyactivity_df %>%
+  filter(Id=="2347167796") 
+```
+
+
+
+Use the Pipe Operator to Filter and Extract Specific Records of a multiple participants.
+
+```{r}
+#Filtering a dataset using the pipe operator to extract specific records
+fitnesswoman_005 <- cleandailyactivity_df %>%
+  filter(Id %in% c(1503960366, 1624580081, 1844505072, 1927972279, 2022484408, 2026352035, 2320127002, 2347167796, 2873212765, 3372868164, 3977333714, 4020332650))
+
+```
+
+
+
+
+**2. Clean and manipulate "sleepday_df"**
+
+Check the datatypes for all columns if are correct.
+
+```{r}
+glimpse(sleepday_df)
+```
+
+
+Convert the **SleepDay** column to a proper date-time format. Extract the date and time from the converted date-time column
+
+```{r}
+# Convert the "SleepDay" column to a proper date-time format
+sleepday_df$SleepDay <- as.POSIXct(sleepday_df$SleepDay, format = "%m/%d/%Y %I:%M:%S %p")
+
+# Extract the date and time from the converted date-time column
+sleepday_df$Date <- as.Date(sleepday_df$SleepDay)
+sleepday_df$Time <- format(sleepday_df$SleepDay, "%H:%M:%S")
+
+```
+
+
+Select and arrange columns in the order you want.
+```{r}
+#select and arrange columns
+cleansleepday_df <- select(sleepday_df,Id,Date,Time,TotalSleepRecords,TotalMinutesAsleep,TotalTimeInBed)
+```
+
+
+View first six records.
+
+```{r}
+#view data
+head(cleansleepday_df)
+```
+
+
+**Sleep data statistics**
+
+Some of this information can be used in guiding and advising new fitness clients.
+
+```{r}
+# Calculate statistics
+sleep_totalrecords <- nrow(cleansleepday_df)
+sleep_totaldays <- length(unique(cleansleepday_df$Date))
+sleep_totalwomen_participants <- length(unique(cleansleepday_df$Id))
+minimum_totalminutesasleep <- min(cleansleepday_df$TotalMinutesAsleep)
+maximum_totalminutesasleep <- max(cleansleepday_df$TotalMinutesAsleep)
+average_totalminutesasleep <- mean(cleansleepday_df$TotalMinutesAsleep)
+minimum_TotalTimeInBed <- min(cleansleepday_df$TotalTimeInBed)
+maximum_TotalTimeInBed <- max(cleansleepday_df$TotalTimeInBed)
+average_TotalTimeInBed <- mean(cleansleepday_df$TotalTimeInBed)
+
+# Print the calculated statistics
+cat("Total sleep records:", sleep_totalrecords, "\n")
+cat("Total sleep days recorded:", sleep_totaldays, "\n")
+cat("Total women participants in sleep records:", sleep_totalwomen_participants, "\n")
+cat("Minimum minutes asleep :", minimum_totalminutesasleep, "\n")
+cat("Maximum minutes asleep:", maximum_totalminutesasleep, "\n")
+cat("Average minutes asleep:", average_totalminutesasleep, "\n")
+cat("Minimum time in bed:", minimum_TotalTimeInBed, "\n")
+cat("Maximum time in bed:", maximum_TotalTimeInBed, "\n")
+cat("Average time in bed:", average_TotalTimeInBed, "\n")
+```
+
+
+The correlation between total minutes asleep and total time in bed is 0.920414, which indicates a strong positive correlation. This means that as total minutes asleep increases, total time in bed tends to increase as well.
+
+```{r}
+# Calculate the correlation coefficient between total minutes asleep and total time in bed
+cor(cleansleepday_df$TotalMinutesAsleep, cleansleepday_df$TotalTimeInBed)
+```
+
+The code below proves the correlation above.
+
+```{r}
+# Check the correlation between numerical variables
+cor(cleansleepday_df[, c("TotalSleepRecords", "TotalMinutesAsleep", "TotalTimeInBed")])
+
+```
+
+Achieving Insights: Trend Analysis of Total Minutes Asleep Over Time.
+
+```{r}
+# Calculate the trend in total minutes asleep over time
+TotalMinutesAsleep_by_date <- cleansleepday_df %>%
+  group_by(Date) %>%
+  summarise(total_minutes_asleep = sum(TotalMinutesAsleep))
+
+TotalMinutesAsleep_by_date
+```
+
+
+Total Time in Bed Trend Analysis.
+
+```{r}
+# Calculate the trend in total time in bed over time
+TotalTimeInBed_by_date <- cleansleepday_df %>%
+  group_by(Date) %>%
+  summarise(total_time_in_bed = sum(TotalTimeInBed))
+
+TotalTimeInBed_by_date
+```
+
+
+Filter records for a single participant.
+
+```{r}
+#Filter specific records
+fitnesswomenTTIB <- cleansleepday_df %>%
+  filter(Id %in% c(8378563200))
+
+```
+
+
+
+
+**3. Clean and manipulate "weightloginfo_df"**
+
+
+Check the datatypes for all columns if are correct.
+
+```{r}
+glimpse(weightloginfo_df)
+```
+
+
+Convert the "Date" column from character to datetime format using the specified format. Add new column "DateOnly" with only the date part and another column "TimeOnly" with only the time part extracted from the datetime values in the "Date" column.
+
+```{r}
+#Change the date column datatype from chr to datetime
+weightloginfo_df$Date <- as.POSIXct(weightloginfo_df$Date, format = "%m/%d/%Y %I:%M:%S %p")
+
+#Create a column for date only
+weightloginfo_df$DateOnly <- as.Date(weightloginfo_df$Date)
+
+#Create a column for Time only
+weightloginfo_df$TimeOnly <- format(weightloginfo_df$Date, format = "%H:%M:%S")
+
+
+```
+
+
+
+**Arrange columns in the order you want** and ignore columns you will not need in analysis in this case **Fat column** because it has missing values.
+
+```{r}
+#select and arrange columns
+cleanweightloginfo_df <- select(weightloginfo_df,Id,DateOnly,TimeOnly,WeightKg,WeightPounds,BMI,IsManualReport,LogId)
+```
+
+
+View first 6 records.
+
+```{r}
+#View data
+head(cleanweightloginfo_df)
+```
+
+
+**Weightinfo data statistics**
+
+Some of this information can be used in guiding and advising new fitness clients. 
+
+```{r}
+# Calculate statistics
+weightinfo_totalrecords <- nrow(cleanweightloginfo_df)
+weightinfo_totaldays <- length(unique(cleanweightloginfo_df$DateOnly))
+weightinfo_totalparticipants <- length(unique(cleanweightloginfo_df$Id))
+mean_weight <- mean(cleanweightloginfo_df$WeightKg)
+min_weight <- min(cleanweightloginfo_df$WeightKg)
+max_weight <- max(cleanweightloginfo_df$WeightKg)
+
+
+# Print the calculated statistics
+cat("Total Weightinfo Records:", weightinfo_totalrecords, "\n")
+cat("Total Weightinfo collection Days:", weightinfo_totaldays, "\n")
+cat("Total women participants:", weightinfo_totalparticipants, "\n")
+cat("Average Weight:", mean_weight, "\n")
+cat("Minimum Weight:", min_weight, "\n")
+cat("Maximum Weight:", max_weight, "\n")
+
+```
+
+Calculate the correlation coefficient between weight and BMI. Correlation between Weight and BMI: 0.7356837. The key finding is that there is a strong positive relationship between weight and BMI.In other words, as weight increases, BMI also increases. This is to be expected, as BMI is a measure of body fat, and weight is a major component of body fat.
+
+```{r}
+correlation <- cor(cleanweightloginfo_df$WeightKg, cleanweightloginfo_df$BMI)
+cat("Correlation between Weight and BMI:", correlation, "\n")
+
+```
+
+
+The code analyzes weight log reports and categorizes them based on manual input. There are 26 reports marked as "Not Manual" (IsManualReport = FALSE) and 41 as "Manual" (IsManualReport = TRUE). The data is grouped by the manual reporting status, and then the count of reports in each category is calculated. 
+
+```{r}
+# Group the data and calculate the counts
+grouped_IsManualReport <- cleanweightloginfo_df %>%
+  group_by(IsManualReport) %>%
+  summarize(no_of_reports = n())
+
+grouped_IsManualReport
+```
+
+The code creates a new column in the dataset called "BMI_Category" that categorizes individuals based on their BMI values. The categories include "Underweight," "Normal weight," "Overweight," "Obesity," and various classes of obesity. The code then counts the occurrences of each BMI category.
+After categorization, the analysis shows that the dataset contains three distinct BMI categories:
+
+* Class III Obesity: Only 1 participant falls into this category.
+* Normal weight: 34 participants fall within the "Normal weight" category.
+* Overweight: 32 participants are categorized as "Overweight."
+
+```{r}
+# Create a new column with the BMI categories
+BMI_category_Count <- cleanweightloginfo_df %>%
+  mutate(BMI_Category = case_when(
+    BMI < 18.5 ~ "Underweight",
+    BMI >= 18.5 & BMI < 25 ~ "Normal weight",
+    BMI >= 25 & BMI < 30 ~ "Overweight",
+    BMI >= 30 & BMI < 35 ~ "Obesity",
+    BMI >= 35 & BMI < 40 ~ "Class I Obesity",
+    BMI >= 40 & BMI < 45 ~ "Class II Obesity",
+    BMI >= 45 ~ "Class III Obesity"
+  ))
+
+# Count the occurrences of each BMI category
+counted_categories <- BMI_category_Count %>%
+  group_by(BMI_Category) %>%
+  summarise(Count = n())
+
+counted_categories
+
+```
+
+
+
+
+## **Visualizations and Key Findings**
+
+**1. Visualizations and Key Findings of "cleandailyactivity_df"**
+
+The plotted data represents the trend in total steps taken over a period of time. Initially, there is a gradual and consistent decline in the number of steps recorded with fluctuations, indicating a potential shift in activity levels. However, what stands out most prominently is the sudden and steep decline observed towards the end of the time frame. This sharp decline could signify a significant change in behavior or external factors impacting step count. Further investigation into this sharp decline could reveal valuable insights into the underlying reasons for the observed trend.
+
+```{r}
+# Plot the trend in total steps over time
+activity_firstday <- min(cleandailyactivity_df$newActivityDate)
+activity_lastday <- max(cleandailyactivity_df$newActivityDate)
+
+ggplot(total_steps_by_date, aes(newActivityDate, total_steps)) +
+  geom_line(color = "darkblue", linewidth = 1.2) +
+  labs(title = "Tracking Progress: Total Steps Trend Over Time",
+       subtitle=paste0("Analyzing Activity Data from: ", activity_firstday, " to ", activity_lastday),
+       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
+       x="Activity Date",
+       y="Total Steps")
+
+```
+
+
+Total Distance Covered from April 12, 2016, to May 12, 2016, exhibits a consistent decline with fluctuations and a sudden steep drop towards the end, possibly indicating a significant shift in activity levels or an external influence.
+
+```{r}
+# Plot the trend in total distance over time
+ggplot(total_distance_by_date, aes(newActivityDate, total_distance)) +
+  geom_line(color = "darkgreen", linewidth = 1.2) +
+  labs(title = "Total Distance Trend Analysis",
+       subtitle=paste0("Exploring Changes in Total Distance Covered from: ", activity_firstday, " to ", activity_lastday),
+       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
+       x="Activity Date",
+       y="Total Distance")
+
+```
+
+
+The plot illustrates the trend in calories burned over a span from 2016-04-12 to 2016-05-12. Initially, there is a consistent decline in calories burned with fluctuations, suggesting a gradual shift in activity. Notably, a sudden and steep decline towards the end of the period could indicate a significant change in exercise behavior or external factors influencing energy expenditure.
+
+```{r}
+# Plot the trend in calories burned over time
+ggplot(calories_burned_by_date, aes(newActivityDate, calories_burned)) +
+  geom_line(color = "purple", linewidth = 1.2) +
+  labs(title = "Tracking Energy Expenditure: Trend in Calories Burned Over Time",
+       subtitle=paste0("Analyzing Activity Data from: ", activity_firstday, " to ", activity_lastday),
+       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
+       x="Activity Date",
+       y="Calories Burned")
+```
+
+
+The plotted data illustrates a woman's activity levels over a month. Her step count follows a distinct pattern: an intense workout on the first day, followed by decreasing activity in the subsequent days, including periods of inactivity. Towards the end of the month, there's a sudden surge in activity, peaking before another decline. This fluctuating trend showcases her varying exercise commitment and highlights potential factors influencing her activity levels. 
+
+```{r}
+ggplot(fitnesswoman_001, aes(newActivityDate, TotalSteps)) +
+  geom_line(color = "darkblue", linewidth = 1.2) +
+  labs(title = "Tracking Total Steps: Unveiling the 31-Day Journey",
+       subtitle=paste0("A Comprehensive Trend Analysis of Participant's Activity"),
+       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
+       x="Activity Date",
+       y="Total Steps")
+```
+
+
+
+The depicted plot showcases consistent daily exercise by a woman over 31 days, with noticeable fluctuations. Her activity level remains relatively steady, followed by a sudden significant increase in activity towards the end. However, this surge is succeeded by a sharp decline. Despite the fluctuations, her dedication to daily exercise remains evident.
+
+```{r}
+ggplot(fitnesswoman_002, aes(newActivityDate, TotalSteps)) +
+  geom_line(color = "darkblue", linewidth = 1.2) +
+  labs(title = "Exploring Activity Fluctuations: A 31-Day Step Journey",
+       subtitle=paste0("Analyzing Variations in Total Steps for a Month"),
+       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
+       x="Activity Date",
+       y="Total Steps")
+```
+
+
+
+The presented plot illustrates a woman's consistent activity level in terms of total steps over the span of a month. Despite maintaining a steady performance, there are noticeable fluctuations on certain days, indicating variability in her routine. Some days stand out with notably higher step counts, showcasing her capacity for increased activity. However, as the month progresses, there's a gradual decline in her overall activity, suggesting a potential change in her exercise routine. 
+
+```{r}
+ggplot(fitnesswoman_003, aes(newActivityDate, TotalSteps)) +
+  geom_line(color = "darkblue", linewidth = 1.2) +
+  labs(title = "Monthly Total Steps Analysis: Unveiling Activity Trends",
+       subtitle=paste0("Exploring 31 Days of Physical Activity Patterns"),
+       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
+       x="Activity Date",
+       y="Total Steps")
+```   
+
+
+This composite plot offers a comprehensive perspective on individual women's total steps over a 31-day span. Each woman's activity trend is depicted in a separate facet, allowing for direct comparison. While some exhibit consistent patterns with occasional fluctuations, others showcase varying levels of daily steps. 
+
+```{r}
+ggplot(fitnesswoman_005, aes(newActivityDate, TotalSteps)) +
+  geom_line(color = "darkblue", linewidth = 1.2) +
+  facet_wrap(~Id) +
+  labs(title = "Individual Total Steps Analysis: A Multifaceted View",
+       subtitle=paste0("Exploring 31 Days of Activity Trends for Different Women"),
+       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
+       x="Activity Date",
+       y="Total Steps")
+```
+
+
+**2. Visualizations and Key Findings of "cleansleepday_df"**
+
+
+The plotted data illustrates a distinct sleep pattern for 24 women over the course of a month. There is an initial decline in total minutes asleep, marked by numerous fluctuations characterized by alternating periods of increased and decreased sleep. Toward the end of the month, there's a pronounced steep decline in sleep duration. This trend suggests possible disruptions in sleep quality and consistency, highlighting the need for further investigation into factors impacting sleep patterns. 
+
+```{r}
+# Plot the trend in total minutes asleep over time
+
+ggplot(TotalMinutesAsleep_by_date, aes(Date, total_minutes_asleep)) +
+  geom_line(color = "darkblue", linewidth = 1.2) +
+  labs(title = "Exploring Sleep Patterns: Total Minutes Asleep Over Time",
+       subtitle=paste0("Analyzing Sleep Trends Across Dates for 24 Women"),
+       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
+       x="Date",
+       y="Total Minutes Asleep")
+
+```
+
+
+
+The displayed plot reveals a consistent downward trend in total time spent in bed for 24 women over the span of a month. Amidst this decline, there are notable fluctuations, with periods of increased and decreased bedtimes. Towards the final days, a sharp and significant drop in total time in bed is evident, indicating potential changes in sleep patterns or external factors influencing bedtime routines. 
+
+```{r}
+# Plot the trend in total time in bed over time
+
+ggplot(TotalTimeInBed_by_date, aes(Date, total_time_in_bed)) +
+  geom_line(color = "darkred", linewidth = 1.2) +
+  labs(title = "Tracking Bedtime Trends: Total Time in Bed Over a Month",
+       subtitle=paste0("Analyzing Bedtime Duration Patterns Across Dates for 24 Women"),
+       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
+       x="Date",
+       y="Total Time in Bed")
+
+```
+
+
+
+The depicted plot portrays a participant's inconsistent sleep pattern over a 31-day period. The total time spent in bed exhibits continuous fluctuations, with no discernible steady trend. These fluctuations suggest an unstable sleep routine, potentially influenced by various factors impacting the participant's bedtime habits.
+
+```{r}
+ggplot(fitnesswomenTTIB, aes(Date,TotalTimeInBed)) +
+  geom_line(color = "maroon", linewidth = 1.2) +
+  labs(title = "Exploring Bedtime Patterns: 31-Day Total Time in Bed Analysis",
+       subtitle=paste0("Tracing a Participant's Bedtime Trends Over Time"),
+       caption=paste0("Prepared by Mr. Jefferson Mwatati"),
+       x="Date",
+       y="Total Time in Bed")+
+  theme_light()
+
+```
+
+
+
+The presented histogram provides insight into the distribution of sleep durations among participants. The x-axis represents the total minutes asleep, with the y-axis indicating the frequency of occurrences. The histogram showcases a range of sleep durations, from a minimum of 58 minutes to a maximum of 796 minutes, with an average of approximately 419.47 minutes.
+
+```{r}
+# Create a histogram to visualize the distribution of TotalMinutesAsleep
+
+ggplot(cleansleepday_df, aes(x = TotalMinutesAsleep)) +
+  geom_histogram(binwidth = 30, col = "white", fill = "darkred") +
+  labs(title = "Understanding Sleep Duration Distribution",subtitle=paste0("Exploring the Spread of Total Minutes Asleep in a Dataset"),x = "Minutes Asleep", y = "Frequency", caption=paste0("Prepared by Mr. Jefferson Mwatati")) +
+  theme_bw()
+
+```
+
+
+
+The histogram visualizes the distribution of total time spent in bed among participants. The x-axis represents the time in bed (in minutes), while the y-axis indicates the count of occurrences. The histogram showcases a range of bedtime durations, spanning from a minimum of 61 minutes to a maximum of 961 minutes, with an average duration of approximately 458.64 minutes.
+
+```{r}
+# Plot the distribution of total time in bed
+ggplot(cleansleepday_df, aes(x = TotalTimeInBed)) +
+  geom_histogram(binwidth = 10, col = "white", fill = "darkblue") +
+  labs(title = "Exploring Bedtime Duration Distribution",subtitle=paste0("Analyzing the Spread of Total Time in Bed within the Dataset"), x = "Total Time in Bed (minutes)", y = "Count", caption=paste0("Prepared by Mr. Jefferson Mwatati")) +
+  theme_light()
+```
+
+
+
+This scatter plot illustrates the connection between two variables: total minutes asleep and total time in bed. The x-axis represents the total minutes asleep, while the y-axis signifies the total time spent in bed. The green regression line highlights a strong positive correlation (0.920414) between these two variables. This indicates that as sleep duration increases, there is a tendency for longer time spent in bed.There are a few outliers on the scatter plot, which indicates that there are some people who do not follow the general trend. 
+
+```{r}
+# Create a scatter plot with regression line
+ggplot(cleansleepday_df, aes(x = TotalMinutesAsleep, y = TotalTimeInBed)) +
+  geom_point(color = "brown") +
+  geom_smooth(method = "lm", se = FALSE,linewidth = 1.4, color = "green") +
+  labs(x = "Total Minutes Asleep", y = "Total Time in Bed (minutes)", title = "Exploring the Relationship between Sleep Duration and Bedtime",subtitle=paste0("A strong positive correlation exists between total minutes asleep and total time in bed"), caption=paste0("Prepared by Mr. Jefferson Mwatati"))+
+   theme_light()
+  
+
+```
+
+
+**3. Visualizations and Key Findings of "cleanweightloginfo_df"**
+
+
+The histogram displays the distribution of recorded weights in kilograms. The x-axis shows weight intervals of 9 kg each, while the y-axis represents the frequency of weights falling within each interval. The graph indicates a common weight range around 45-54 kg, with an average weight of 72.04 kg. The minimum and maximum weights are 52.6 kg and 133.5 kg, respectively.
+
+```{r}
+ggplot(cleanweightloginfo_df, aes(x = WeightKg)) +
+  geom_histogram(binwidth = 9, fill = "blue", color = "black") +
+  labs(x = "Weight (Kg)", 
+       y = "Frequency", 
+       title = "Distribution of Weight in Kilograms",
+       subtitle=paste0("Frequency Distribution of Recorded Weights"),
+       caption=paste0("Prepared by Mr. Jefferson Mwatati"))
+
+```
+
+
+The pie chart illustrates the distribution of manual and automatic reports. Manual reports make up the majority of the generated reports at 61%, indicating that a significant portion of data entry is done manually.
+Automatic reports contribute to 39% of the total reports, suggesting that there's a mix of automated and manual data collection.
+
+```{r}
+# Create a pie chart with percentages
+ggplot(grouped_IsManualReport, aes(x = "", y = no_of_reports, fill = factor(IsManualReport))) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "IsManualReport",
+       title = "Manual and Automatic Reports",
+       subtitle=paste0("Proportion of Reports Generated Manually and Automatically"),
+       caption=paste0("Prepared by Mr. Jefferson Mwatati")) +
+  scale_fill_manual(values = c("TRUE" = "purple", "FALSE" = "orange")) +
+  geom_text(aes(label = scales::percent(no_of_reports / sum(no_of_reports))), 
+            position = position_stack(vjust = 0.5)) +
+  theme_void()
+
+
+```
+
+
+
+The pie chart represents the distribution of different BMI categories among individuals. The largest portion of participants falls under the "Normal weight" category, constituting 50.7% of the individuals, indicating a significant proportion of healthy weight individuals.The "Overweight" category accounts for 47.8% of the distribution, suggesting a substantial proportion of participants are classified as overweight based on their BMI.While relatively small in proportion at 1.5%, the presence of individuals in the "Class III Obesity" category indicates that some participants have a severe level of obesity. 
+
+```{r}
+# Create a pie chart
+ggplot(counted_categories, aes(x = "", y = Count, fill = BMI_Category)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "BMI Category",
+       title = "BMI Category Distribution",
+       subtitle=paste0("Proportion of Different BMI Categories Among Individuals"),
+       caption = "Prepared by Mr. Jefferson Mwatati") +
+  scale_fill_brewer(palette = "Set1") +  
+  geom_text(aes(label = scales::percent(Count / sum(Count))), 
+            position = position_stack(vjust = 0.5)) +
+  theme_void()
+```
+
+
+
+
+
+
+## **A summary of analysis**
+
+The analysis of the smart device data has revealed some interesting trends that could be applied to Bellabeat customers and inform their marketing strategy.Here are the key findings based on the analysis:
+
+<div style="color: blue;">**There is a decline in activity levels over time.**</div> This is evident in the total steps taken, total distance covered, and calories burned data. This trend could be due to a number of factors, such as busy schedules, changes in weather, or simply boredom with the same old workout routine. Bellabeat could target their marketing efforts to encourage users to stay active, even when they're feeling unmotivated. They could offer new workout challenges, provide access to workout classes, or simply send motivational messages to their users.
+
+<div style="color: blue;">**There is a lot of variability in sleep patterns.**</div> This is evident in the total minutes asleep and total time in bed data. Some users get a consistent 8 hours of sleep per night, while others have much more variable sleep patterns. Bellabeat could target their marketing efforts to help users improve their sleep quality. They could offer tips on sleep hygiene, provide access to sleep tracking apps, or even sell sleep products.
+
+<div style="color: blue;">**There is a strong correlation between weight and BMI.**</div> This means that as weight increases, BMI also increases. This is to be expected, as BMI is a measure of body fat, and weight is a major component of body fat. Bellabeat could use this information to target their marketing efforts to users who are overweight or obese. They could offer weight loss programs, provide access to healthy recipes, or even sell fitness trackers.
+
+<div style="color: blue;">**A large proportion of reports are manual.**</div> This suggests that there is a need for Bellabeat to improve their automated data collection process. They could invest in new software or hire more staff to help with data entry. This would free up their users to focus on their health and wellness goals, rather than spending time entering data manually.
+
+<div style="color: blue;">**The majority of participants are classified as "Normal weight" or "Overweight."**</div> This suggests that Bellabeat has a good mix of users, from those who are looking to maintain a healthy weight to those who are looking to lose weight. Bellabeat could target their marketing efforts to both groups of users, offering different products and services to meet their individual needs.
+
+
+#### **Influence on Marketing Strategy**
+
+* **Activity-focused Campaigns:** Bellabeat can run campaigns promoting the benefits of consistent physical activity, highlighting the connection between activity levels and overall health. This can attract users who are looking for holistic health solutions.
+
+* **Sleep Improvement Initiatives:** Marketing efforts can emphasize the importance of quality sleep and how Bellabeat's products can help users achieve better sleep patterns. Testimonials and success stories can reinforce these messages.
+
+* **Personalized Weight Management:** Bellabeat can position itself as a comprehensive health companion by showcasing how its products help users manage their weight and BMI effectively. Educational content on weight management can establish the company as an authority in the field.
+
+		
+
+## **Recommendations Based on Analysis**
+
+Here are the recommendations based on the analysis:
+
+* **Create a challenge to encourage users to increase their activity levels.** This could be a step challenge, a distance challenge, or a calorie burn challenge. Bellabeat could offer prizes to the winners of the challenge to motivate users to participate.
+* **Offer a sleep tracking app or program.** This would help users track their sleep patterns and identify areas where they can improve their sleep quality. Bellabeat could also offer tips on sleep hygiene and provide access to relaxing music or sounds to help users fall asleep.
+* **Create a weight loss program.** This could include meal plans, workout routines, and support from a coach. Bellabeat could also offer discounts on fitness trackers or other products that can help users lose weight.
+* **Improve their automated data collection process.** This would free up their users to focus on their health and wellness goals, rather than spending time entering data manually.
+* **Target their marketing efforts to specific groups of users.** This could include users who are looking to maintain a healthy weight, users who are looking to lose weight, or users who are interested in improving their sleep quality.
+* **Offer products and services that meet the individual needs of their users.** This could include fitness trackers, workout clothes, meal plans, or weight loss programs.
+* **Add more data points to monitor users behavior.** This could include age,diet of food eaten every day, residence etc. This kind of data points will add to the analysis depth and understanding of the users.
+
+
+#### **Recommendations for New Fitness Clients:**
+
+* **Activity:** New fitness clients should aim for a daily step count and distance similar to the analyzed averages. Gradual increases in activity can lead to improved health outcomes.
+
+* **Sleep:** Clients should focus on maintaining consistent sleep schedules and durations. Prioritizing sleep quality through relaxation techniques and sleep hygiene practices is essential.
+
+* **Weight Management:** Clients should be educated about the correlation between weight and BMI. A balanced diet, regular exercise, and consultation with healthcare professionals can aid in achieving and maintaining a healthy weight.
+
+
+In conclusion, the analysis of smart device data provides valuable insights for Bellabeat's growth strategy. By tailoring their products to address the identified trends and user needs, Bellabeat can enhance customer engagement and solidify its position as a leader in women's health technology. Additionally, implementing the recommended marketing strategies can help the company effectively communicate its value proposition to its target audience.
+
+
+
+<div style="margin-bottom: 60px;">
+
+**Prepared by:** [Mr. Jefferson Mwatati](https://www.linkedin.com/in/jefferson-mwatati/) 
+**LinkedIn:** https://www.linkedin.com/in/jefferson-mwatati/
+</div>
+
+################################################################################
+                                    **End of Report**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
