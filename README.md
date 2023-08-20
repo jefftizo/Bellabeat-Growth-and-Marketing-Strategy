@@ -1,5 +1,6 @@
 # Bellabeat Growth and Marketing Strategy
 ## Empowering Women's Wellness: Unveiling Smart Device Insights for Bellabeat's Growth and Marketing Strategy
+![bellabeat_logo](https://github.com/jefftizo/Bellabeat-Growth-and-Marketing-Strategy/assets/59502483/0677e3a0-1498-4fa4-9cd7-c52403eed833)
 
 
 <div style="margin-bottom: 60px;">
