@@ -10,7 +10,7 @@ output:
 ---
 
 
-```
+```{r}
 #All required packages
 
 #install.packages("tidyverse")
