@@ -104,11 +104,6 @@ In conclusion, the analysis of smart device data provides valuable insights for 
 
 
 
-<div style="margin-bottom: 60px;">
-
-**Prepared by:** [Mr. Jefferson Mwatati](https://www.linkedin.com/in/jefferson-mwatati/) 
-**LinkedIn:** https://www.linkedin.com/in/jefferson-mwatati/
-</div>
 
 ################################################################################
                                     **End of Report**
